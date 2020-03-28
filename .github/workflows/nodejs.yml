@@ -1,0 +1,45 @@
+# This workflow will do a clean install of node dependencies, build the source code and run tests across different versions of node
+# For more information see: https://help.github.com/actions/language-and-framework-guides/using-nodejs-with-github-actions
+
+name: Node.js CI
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [12.x]
+
+    steps:
+    - uses: actions/checkout@v2
+      
+    - name: Deploy
+      uses: easingthemes/ssh-deploy@v2.0.8
+      env:
+        SSH_PRIVATE_KEY: ${{ secrets.ALIYUN }}
+        ARGS: "-avz --delete"
+        SOURCE: "/" 
+        REMOTE_HOST: "39.105.220.73"
+        REMOTE_USER: "root"
+        TARGET: "/root/nodejs/people_egg"
+        
+    - name: start server
+      uses: appleboy/ssh-action@master
+      with:
+          host: '39.105.220.73'
+          username: 'root'
+          key: ${{ secrets.ALIYUN }}
+          script: |
+            cd /root/nodejs/people_egg
+            npm install
+            npm run stop
+            npm run build
+            npm run start
