@@ -44,7 +44,7 @@ module.exports = appInfo => {
     // validateRoot: false,
   };
   config.jwt = {
-    secrte: '123321Hh',
+    secrte: '123321',
   };
   config.mongoose = {
     client: {
